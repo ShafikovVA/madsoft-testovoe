@@ -1,0 +1,24 @@
+.indicators {
+  display: flex;
+  width: 100%;
+  height: 10px;
+  gap: 10px;
+}
+
+.indicators .indicator{
+  background-color: #b8b8b8;
+  width: 100%;
+}
+.indicators .indicator.disabled{
+  background-color: #070707;
+}
+.indicators .indicator.active{
+  background-color: #c43940;
+}
+
+.tabs {
+  display: flex;
+  width: 100%;
+}
+
+

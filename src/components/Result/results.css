@@ -1,0 +1,13 @@
+.result-container {
+  margin-top: 150px;
+  display: flex;
+  flex-direction: column;
+  font-size: 25px;
+  gap: 25px
+}
+
+.result-container .tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 25px
+}

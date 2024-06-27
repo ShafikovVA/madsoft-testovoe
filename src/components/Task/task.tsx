@@ -1,17 +1,21 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ITask } from '../../types/ITask';
 import { AnswerType } from '../../types/AnswerType';
 import { addAnswer } from '../../store/answers/answers.slice';
+import './task.css';
+import { TaskInput } from '../TaskInput/taskInput';
 
 interface TaskProps extends Omit<ITask, 'id'> {
   active?: boolean;
-  onSuccess: () => void;
+  onSuccess?: () => void;
+  showedAnswer?: AnswerType;
+  isResult?: boolean;
 }
 
 export const Task = (props: TaskProps) => {
   const {
-    description, type, variants, active, onSuccess,
+    description, type, variants, active, onSuccess, showedAnswer, isResult,
   } = props;
   const dispatch = useDispatch();
   const [answer, setAnswer] = useState<AnswerType | null>(null);
@@ -20,80 +24,32 @@ export const Task = (props: TaskProps) => {
     event.preventDefault();
     if (answer !== null) {
       dispatch(addAnswer(answer));
-      onSuccess();
+      if (onSuccess) { onSuccess(); }
       setError(null);
       setAnswer(null);
     } else {
       setError('Вы не дали ответ на вопрос');
     }
   };
-
+  const answerCached = useMemo(() => answer, [answer]);
   return (
     active && (
       <div className="tab">
-        <div className="tab-content">
+        <div className={`tab-content ${(showedAnswer || isResult) && 'result'}`}>
           <div className="description">{description}</div>
           <form onSubmit={onSubmit}>
             {error && <span className="error">{error}</span>}
             <div className="form-content">
-              {
-              type === 'short' && (
-                <input placeholder="ваш ответ" onChange={(event) => setAnswer(event.target.value)} type="text" />
-              )
-            }
-              {
-              type === 'detailed' && (
-                <textarea onChange={(event) => setAnswer(event.target.value)} placeholder="ваш ответ" />
-              )
-            }
-              {
-              type === 'single' && (
-                <>
-                  {variants.map((variant, index) => (
-                    <label key={variant}>
-                      <input placeholder="ваш ответ" name="answer" type="radio" onClick={() => setAnswer(index)} />
-                      {variant}
-                    </label>
-                  ))}
-                </>
-              )
-            }
-              {
-              type === 'multiple' && (
-                <>
-                  {variants.map((variant, index) => (
-                    <label key={variant}>
-                      <input
-                        placeholder="ваш ответ"
-                        name="answer"
-                        type="checkbox"
-                        onChange={
-                        (event) => {
-                          if (event.target.checked && !Array.isArray(answer)) {
-                            setAnswer([index]);
-                          } else if (event.target.checked && Array.isArray(answer)) {
-                            setAnswer([...answer, index]);
-                          } else if (!event.target.checked && Array.isArray(answer) && (answer.length === 1)) {
-                            setAnswer(null);
-                          } else if (!event.target.checked && Array.isArray(answer)) {
-                            setAnswer([...answer.filter((item) => item !== index)]);
-                          // eslint-disable-next-line no-dupe-else-if
-                          }
-                        }
-                      }
-                      />
-                      {variant}
-                    </label>
-                  ))}
-                </>
-              )
-            }
+              <TaskInput type={type} onChange={(value) => setAnswer(value)} variants={variants} answer={answerCached} value={showedAnswer} isResult={isResult} />
             </div>
-            <button type="submit">Ответить</button>
+            {
+              (!showedAnswer && !isResult) && (
+                <button type="submit">Ответить</button>
+              )
+            }
           </form>
         </div>
       </div>
     )
-
   );
 };

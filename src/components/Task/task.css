@@ -1,0 +1,79 @@
+.tabs .tab {
+  width: 100%;
+  height: 100%;
+}
+
+.tab .tab-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  gap: 15px;
+}
+.tab .tab-content.result{
+  flex-direction: row;
+  border: thin solid;
+  margin-top: 0px;
+  padding: 10px 15px;
+}
+
+.tab .tab-content .description {
+  font-size: 18px;
+  width: 600px;
+}
+
+.tab .tab-content form {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.tab .tab-content form .form-content{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.tab .tab-content form .error {
+  color: #c43940;
+}
+
+.tab .tab-content form label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.tab .tab-content form input[type="checkbox"], 
+.tab .tab-content form input[type="radio"] {
+  width: 15px;
+  height: 15px;
+}
+.tab .tab-content form textarea {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  height: 200px;
+  padding: 5px 5px 5px 25px;
+  font-size: 16px;
+}
+.tab .tab-content.result form textarea {
+  resize: none;
+}
+
+.tab .tab-content form input[type="text"] {
+  padding: 5px 5px 5px 25px;
+  width: 450px;
+  font-size: 16px;
+}
+
+.tab .tab-content.result form input[type="text"] {
+  width: auto;
+}
+
+.tab .tab-content form button {
+  width: 250px;
+  color: #fff;
+  background-color: #c43940;
+}
+.test {
+  margin-top: 150px;
+}
