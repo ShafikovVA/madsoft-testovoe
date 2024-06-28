@@ -3,18 +3,11 @@ import { ITaskData } from '../../types/ITaskData';
 export const initialTasks: ITaskData = {
   timer: {
     hours: 0,
-    minutes: 5,
+    minutes: 1,
     seconds: 0,
   },
+  complete: false,
   tasks: [
-    {
-      id: 3,
-      description: 'Что такое html',
-      type: 'multiple',
-      variants: [
-        'Язык программирования', 'Язык гипертекстовой разметки', 'Каскадные таблицы стилей', 'Объектно ориентированное программирование',
-      ],
-    },
     {
       id: 1,
       description: 'Что такое html',
@@ -27,6 +20,14 @@ export const initialTasks: ITaskData = {
       id: 2,
       description: 'Что такое css',
       type: 'single',
+      variants: [
+        'Язык программирования', 'Язык гипертекстовой разметки', 'Каскадные таблицы стилей', 'Объектно ориентированное программирование',
+      ],
+    },
+    {
+      id: 3,
+      description: 'Что такое html',
+      type: 'multiple',
       variants: [
         'Язык программирования', 'Язык гипертекстовой разметки', 'Каскадные таблицы стилей', 'Объектно ориентированное программирование',
       ],

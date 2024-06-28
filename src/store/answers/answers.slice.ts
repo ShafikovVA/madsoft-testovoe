@@ -4,14 +4,13 @@ import { AnswerType } from '../../types/AnswerType';
 const localItems = localStorage.getItem('answer');
 
 export const answerSlice = createSlice({
-  name: 'tasks',
+  name: 'answers',
   initialState: localItems ? JSON.parse(localItems) as AnswerType[] : [] as AnswerType[],
   reducers: {
     addAnswer: (state, { payload: answer }: PayloadAction<AnswerType>) => {
       state.push(answer);
       localStorage.setItem('answer', JSON.stringify(state));
     },
-
   },
 });
 

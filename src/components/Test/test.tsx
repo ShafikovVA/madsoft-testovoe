@@ -1,14 +1,25 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useAnswers } from '../../hooks/useAnswers';
 import { useTasks } from '../../hooks/useTasks';
 import { Task } from '../Task/task';
 import { Timer } from '../Timer';
 import './test.css';
+import { completeTest } from '../../store/tasks/tasks.slice';
 
 export const Test = () => {
   const { tasks, timer } = useTasks();
   const { answers } = useAnswers();
+  const dispatch = useDispatch();
   const [activeIndex, setActiveIndex] = useState<number>(answers.length);
+  const successHandler = (index: number) => {
+    if (tasks.length - 1 === index) {
+      dispatch(completeTest());
+    } else {
+      setActiveIndex(activeIndex + 1);
+    }
+  };
+
   return (
     <section className="test">
       <div className="container">
@@ -24,7 +35,7 @@ export const Test = () => {
         <div className="tabs">
           {
             tasks.map((task, index) => (
-              <Task active={index === activeIndex} onSuccess={() => setActiveIndex(activeIndex + 1)} key={task.id} {...task} />
+              <Task active={index === activeIndex} onSuccess={() => successHandler(index)} key={task.id} index={index} />
             ))
           }
         </div>

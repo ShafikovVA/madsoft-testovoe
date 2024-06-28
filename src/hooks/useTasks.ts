@@ -2,7 +2,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/root';
 
 export const useTasks = () => {
-  const { tasks, timer } = useSelector((state: RootState) => state.tasks);
+  const { tasks, timer, complete } = useSelector((state: RootState) => state.tasks);
+  return { tasks, timer, complete };
+};
 
-  return { tasks, timer };
+export const useTaskByIndex = (index: number) => {
+  const task = useSelector((state: RootState) => state.tasks.tasks[index]);
+  return { task };
 };

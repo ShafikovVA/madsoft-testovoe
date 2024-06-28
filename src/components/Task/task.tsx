@@ -1,37 +1,41 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ITask } from '../../types/ITask';
 import { AnswerType } from '../../types/AnswerType';
 import { addAnswer } from '../../store/answers/answers.slice';
 import './task.css';
 import { TaskInput } from '../TaskInput/taskInput';
+import { useTaskByIndex } from '../../hooks/useTasks';
 
-interface TaskProps extends Omit<ITask, 'id'> {
+interface TaskProps {
   active?: boolean;
   onSuccess?: () => void;
   showedAnswer?: AnswerType;
   isResult?: boolean;
+  index: number;
 }
 
 export const Task = (props: TaskProps) => {
   const {
-    description, type, variants, active, onSuccess, showedAnswer, isResult,
+    active, onSuccess, showedAnswer, isResult, index,
   } = props;
+  // const { answer } = useAnswer();
+  const { task } = useTaskByIndex(index);
+  const { description } = task;
+  const valueRef = useRef<AnswerType | null>(null);
   const dispatch = useDispatch();
-  const [answer, setAnswer] = useState<AnswerType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (answer !== null) {
-      dispatch(addAnswer(answer));
+    if (valueRef.current !== null) {
+      dispatch(addAnswer(valueRef.current));
       if (onSuccess) { onSuccess(); }
       setError(null);
-      setAnswer(null);
+      valueRef.current = null;
     } else {
       setError('Вы не дали ответ на вопрос');
     }
   };
-  const answerCached = useMemo(() => answer, [answer]);
+
   return (
     active && (
       <div className="tab">
@@ -40,7 +44,7 @@ export const Task = (props: TaskProps) => {
           <form onSubmit={onSubmit}>
             {error && <span className="error">{error}</span>}
             <div className="form-content">
-              <TaskInput type={type} onChange={(value) => setAnswer(value)} variants={variants} answer={answerCached} value={showedAnswer} isResult={isResult} />
+              <TaskInput index={index} value={showedAnswer} isResult={isResult} onChange={(value) => { valueRef.current = value; }} />
             </div>
             {
               (!showedAnswer && !isResult) && (

@@ -1,49 +1,49 @@
 import { memo, useMemo } from 'react';
+import { useTaskByIndex } from '../../hooks/useTasks';
 import { AnswerType } from '../../types/AnswerType';
+import { TaskCheckBoxes } from '../Task/inputs/taskCheckbox';
 
 interface TaskInputProps {
-  type: 'single' | 'multiple' | 'short' | 'detailed';
-  onChange: (e: AnswerType | null)=>void;
-  variants: string[];
-  answer: AnswerType | null;
+  index: number;
   value?: AnswerType;
   isResult?: boolean;
+  onChange: (value: AnswerType | null) => void;
 }
 
 export const TaskInput = memo((props: TaskInputProps) => {
   const {
-    type, variants, onChange, answer, value, isResult,
+    index, value, isResult, onChange,
   } = props;
-  console.log(answer);
+  const { task } = useTaskByIndex(index);
   const isDisabled = useMemo(() => (!!value || isResult), [value, isResult]);
   return (
     <>
       {
-        type === 'short' && (isDisabled) && (
+        task.type === 'short' && (isDisabled) && (
           <input disabled value={value ? value as string : ''} type="text" />
         )
       }
       {
-        type === 'short' && (!isDisabled) && (
+        task.type === 'short' && (!isDisabled) && (
           <input onChange={(event) => onChange(event.target.value)} type="text" />
         )
       }
       {
-        type === 'detailed' && (isDisabled) && (
+        task.type === 'detailed' && (isDisabled) && (
           <textarea disabled value={value ? value as string : ''} />
         )
       }
       {
-        type === 'detailed' && (!isDisabled) && (
+        task.type === 'detailed' && (!isDisabled) && (
           <textarea onChange={(event) => onChange(event.target.value)} placeholder="ваш ответ" />
         )
       }
       {
-        type === 'single' && (isDisabled) && (
+        task.type === 'single' && (isDisabled) && (
           <>
-            {variants.map((variant, index) => (
+            {task.variants.map((variant, variantsIndex) => (
               <label key={variant}>
-                <input disabled name="answer" type="radio" checked={value ? value === index : false} />
+                <input disabled name="answer" type="radio" checked={value !== undefined ? value === variantsIndex : false} />
                 {variant}
               </label>
             ))}
@@ -51,11 +51,11 @@ export const TaskInput = memo((props: TaskInputProps) => {
         )
       }
       {
-        type === 'single' && (!isDisabled) && (
+        task.type === 'single' && (!isDisabled) && (
           <>
-            {variants.map((variant, index) => (
+            {task.variants.map((variant, variantsIndex) => (
               <label key={variant}>
-                <input placeholder="ваш ответ" name="answer" type="radio" onClick={() => onChange(index)} />
+                <input placeholder="ваш ответ" name="answer" type="radio" onClick={() => onChange(variantsIndex)} />
                 {variant}
               </label>
             ))}
@@ -63,14 +63,14 @@ export const TaskInput = memo((props: TaskInputProps) => {
         )
       }
       {
-        type === 'multiple' && (isDisabled) && (
+        task.type === 'multiple' && (isDisabled) && (
           <>
-            {variants.map((variant, index) => (
+            {task.variants.map((variant, variantsIndex) => (
               <label key={variant}>
                 <input
                   name="answer"
                   type="checkbox"
-                  checked={value && (Array.isArray(value)) ? value[index] === index : false}
+                  checked={value !== undefined && (Array.isArray(value)) ? value.includes(variantsIndex) : false}
                   disabled
                 />
                 {variant}
@@ -80,33 +80,8 @@ export const TaskInput = memo((props: TaskInputProps) => {
         )
       }
       {
-        type === 'multiple' && (variants) && (!isDisabled) && (
-          <>
-            {variants.map((variant, index) => (
-              <label key={variant}>
-                <input
-                  placeholder="ваш ответ"
-                  name="answer"
-                  type="checkbox"
-                  onChange={
-                  (event) => {
-                    if (event.target.checked && !Array.isArray(answer)) {
-                      onChange([index]);
-                    } else if (event.target.checked && Array.isArray(answer)) {
-                      onChange([...answer, index]);
-                    } else if (!event.target.checked && Array.isArray(answer) && (answer.length === 1)) {
-                      onChange(null);
-                    } else if (!event.target.checked && Array.isArray(answer)) {
-                      onChange([...answer.filter((item) => item !== index)]);
-                    // eslint-disable-next-line no-dupe-else-if
-                    }
-                  }
-                }
-                />
-                {variant}
-              </label>
-            ))}
-          </>
+        task.type === 'multiple' && (task.variants) && (!isDisabled) && (
+          <TaskCheckBoxes onChange={(checkboxValue) => onChange(checkboxValue)} variants={task.variants} />
         )
       }
     </>

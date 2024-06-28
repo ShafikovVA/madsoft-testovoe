@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
 import './timer.css';
+import { useDispatch } from 'react-redux';
+import { completeTest } from '../../store/tasks/tasks.slice';
 
 export const Timer = ({ hours = 0, minutes = 2, seconds = 0 }) => {
   const [over, setOver] = useState(false);
   const [[h, m, s], setTime] = useState([hours, minutes, seconds]);
+  const dispatch = useDispatch();
 
   const tick = () => {
     if (over) return;
-
     if (h === 0 && m === 0 && s === 0) {
+      localStorage.setItem('timer', JSON.stringify([h, m, s]));
       setOver(true);
+      dispatch(completeTest());
     } else if (m === 0 && s === 0) {
       setTime([h - 1, 59, 59]);
       localStorage.setItem('timer', JSON.stringify([h, m, s]));

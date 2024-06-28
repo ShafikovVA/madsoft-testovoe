@@ -13,7 +13,7 @@ export const Result = () => {
         <div className="tasks">
           {
             tasks && tasks.map((task, index) => (
-              <Task key={task.id} active {...task} showedAnswer={answers[index]} isResult />
+              <Task key={task.id} active index={index} showedAnswer={answers[index]} isResult />
             ))
           }
         </div>
